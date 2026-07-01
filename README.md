@@ -23,6 +23,16 @@ complete path is:
 | `Copy_of_Eeaman6.ipynb` | Original 121-cell Colab notebook |
 | `docs/assets/geographical-clusters.png` | Geographic KMeans output extracted from the notebook |
 | `docs/assets/xgboost-roc-curve.png` | XGBoost ROC output extracted from the notebook |
+| `docs/assets/airbnb-ds-pipeline-overview.svg` | Conceptual nine-stage production ML pipeline |
+| `docs/SVG_README.md` | SVG implementation, architecture mapping, and editing guide |
+
+## End-to-end pipeline overview
+
+![Airbnb data science pipeline](docs/assets/airbnb-ds-pipeline-overview.svg)
+
+See [the SVG implementation guide](docs/SVG_README.md) for the responsibilities
+of each stage, how the notebook maps to the diagram, the SVG structure, and
+instructions for extending or editing it.
 
 The notebook references four data files that are not included:
 
