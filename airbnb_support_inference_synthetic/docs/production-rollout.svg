@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 1400 920" role="img" aria-labelledby="title desc">
+  <title id="title">Production rollout architecture for Airbnb support repeat-contact inference</title>
+  <desc id="desc">Online support events flow through point-in-time features, a risk inference service, a routing policy, and an agent queue. Logged outcomes feed an offline labeling, training, evaluation, registry, experimentation, and monitoring loop.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffaf8"/>
+      <stop offset="100%" stop-color="#f5f7ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#172554" flood-opacity="0.12"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      .title { font: 700 30px Inter, ui-sans-serif, system-ui, sans-serif; fill: #172554; }
+      .subtitle { font: 400 15px Inter, ui-sans-serif, system-ui, sans-serif; fill: #475569; }
+      .lane { font: 700 15px Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: 1.4px; }
+      .box-title { font: 700 17px Inter, ui-sans-serif, system-ui, sans-serif; fill: #172554; }
+      .box-text { font: 400 13px Inter, ui-sans-serif, system-ui, sans-serif; fill: #475569; }
+      .small { font: 600 12px Inter, ui-sans-serif, system-ui, sans-serif; fill: #64748b; }
+      .metric { font: 600 13px Inter, ui-sans-serif, system-ui, sans-serif; fill: #0f766e; }
+      .online-box { fill: #ffffff; stroke: #fb7185; stroke-width: 1.5; }
+      .offline-box { fill: #ffffff; stroke: #818cf8; stroke-width: 1.5; }
+      .control-box { fill: #ffffff; stroke: #14b8a6; stroke-width: 1.5; }
+      .arrow-online { fill: none; stroke: #e11d48; stroke-width: 2; marker-end: url(#arrow); }
+      .arrow-offline { fill: none; stroke: #4f46e5; stroke-width: 2; marker-end: url(#arrow); }
+      .arrow-feedback { fill: none; stroke: #0f766e; stroke-width: 2; stroke-dasharray: 7 6; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1400" height="920" rx="24" fill="url(#background)"/>
+  <text x="60" y="58" class="title">Repeat-contact risk → safe senior-agent routing</text>
+  <text x="60" y="86" class="subtitle">Separate prediction from policy, validate causal impact, and retain human control</text>
+
+  <rect x="45" y="118" width="1310" height="300" rx="18" fill="#fff1f2" stroke="#fecdd3"/>
+  <text x="70" y="150" class="lane" fill="#be123c">ONLINE DECISION PATH · SECONDS</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="180" width="210" height="170" rx="14" class="online-box"/>
+    <circle cx="100" cy="210" r="16" fill="#ffe4e6"/>
+    <text x="100" y="215" text-anchor="middle" class="small" fill="#be123c">1</text>
+    <text x="125" y="215" class="box-title">Support event</text>
+    <text x="92" y="250" class="box-text">Ticket opened</text>
+    <text x="92" y="274" class="box-text">Early interaction update</text>
+    <text x="92" y="298" class="box-text">Booking + guest + host</text>
+    <text x="92" y="322" class="box-text">Event time + trace ID</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="330" y="180" width="220" height="170" rx="14" class="online-box"/>
+    <circle cx="360" cy="210" r="16" fill="#ffe4e6"/>
+    <text x="360" y="215" text-anchor="middle" class="small" fill="#be123c">2</text>
+    <text x="385" y="215" class="box-title">Feature service</text>
+    <text x="352" y="250" class="box-text">Point-in-time joins</text>
+    <text x="352" y="274" class="box-text">Schema + freshness checks</text>
+    <text x="352" y="298" class="box-text">Ticket-open or T+30 contract</text>
+    <text x="352" y="322" class="box-text">No action/outcome leakage</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="600" y="180" width="220" height="170" rx="14" class="online-box"/>
+    <circle cx="630" cy="210" r="16" fill="#ffe4e6"/>
+    <text x="630" y="215" text-anchor="middle" class="small" fill="#be123c">3</text>
+    <text x="655" y="215" class="box-title">Inference API</text>
+    <text x="622" y="250" class="box-text">Versioned preprocessing</text>
+    <text x="622" y="274" class="box-text">Calibrated risk model</text>
+    <text x="622" y="298" class="box-text">Risk tier + reason codes</text>
+    <text x="622" y="322" class="metric">Target: p95 &lt; 200 ms</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="870" y="180" width="220" height="170" rx="14" class="online-box"/>
+    <circle cx="900" cy="210" r="16" fill="#ffe4e6"/>
+    <text x="900" y="215" text-anchor="middle" class="small" fill="#be123c">4</text>
+    <text x="925" y="215" class="box-title">Routing policy</text>
+    <text x="892" y="250" class="box-text">Capacity-aware threshold</text>
+    <text x="892" y="274" class="box-text">Mandatory safety rules</text>
+    <text x="892" y="298" class="box-text">Experiment assignment</text>
+    <text x="892" y="322" class="box-text">Kill switch + fallback</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1140" y="180" width="190" height="170" rx="14" class="online-box"/>
+    <circle cx="1170" cy="210" r="16" fill="#ffe4e6"/>
+    <text x="1170" y="215" text-anchor="middle" class="small" fill="#be123c">5</text>
+    <text x="1195" y="215" class="box-title">Agent workflow</text>
+    <text x="1162" y="250" class="box-text">Queue recommendation</text>
+    <text x="1162" y="274" class="box-text">Reason codes</text>
+    <text x="1162" y="298" class="box-text">Human override</text>
+    <text x="1162" y="322" class="box-text">Action + reason logged</text>
+  </g>
+
+  <path d="M280 265 H330" class="arrow-online"/>
+  <path d="M550 265 H600" class="arrow-online"/>
+  <path d="M820 265 H870" class="arrow-online"/>
+  <path d="M1090 265 H1140" class="arrow-online"/>
+
+  <rect x="70" y="370" width="1260" height="28" rx="8" fill="#ffffff" stroke="#fecdd3"/>
+  <text x="90" y="389" class="small">Every request logs: feature schema · model version · calibrated score · policy version · recommendation · override · trace ID</text>
+
+  <rect x="45" y="450" width="1310" height="315" rx="18" fill="#eef2ff" stroke="#c7d2fe"/>
+  <text x="70" y="482" class="lane" fill="#4338ca">OFFLINE LEARNING AND RELEASE PATH · DAILY / WEEKLY</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="515" width="210" height="170" rx="14" class="offline-box"/>
+    <text x="92" y="550" class="box-title">Outcome + label job</text>
+    <text x="92" y="580" class="box-text">Wait 7-day label window</text>
+    <text x="92" y="604" class="box-text">Join repeat contacts</text>
+    <text x="92" y="628" class="box-text">Resolve thread identity</text>
+    <text x="92" y="652" class="box-text">Version data snapshot</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="330" y="515" width="220" height="170" rx="14" class="offline-box"/>
+    <text x="352" y="550" class="box-title">Train + calibrate</text>
+    <text x="352" y="580" class="box-text">Temporal grouped split</text>
+    <text x="352" y="604" class="box-text">Logistic champion</text>
+    <text x="352" y="628" class="box-text">XGBoost challenger</text>
+    <text x="352" y="652" class="box-text">Immutable pipeline artifact</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="600" y="515" width="220" height="170" rx="14" class="offline-box"/>
+    <text x="622" y="550" class="box-title">Validation gates</text>
+    <text x="622" y="580" class="box-text">PR-AUC + lift at capacity</text>
+    <text x="622" y="604" class="box-text">Calibration + Brier score</text>
+    <text x="622" y="628" class="box-text">Slice + leakage checks</text>
+    <text x="622" y="652" class="box-text">Latency + schema contract</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="870" y="515" width="220" height="170" rx="14" class="offline-box"/>
+    <text x="892" y="550" class="box-title">Registry + release</text>
+    <text x="892" y="580" class="box-text">Code SHA + data lineage</text>
+    <text x="892" y="604" class="box-text">Approval + model card</text>
+    <text x="892" y="628" class="box-text">Shadow → canary → scale</text>
+    <text x="892" y="652" class="box-text">One-click rollback</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1140" y="515" width="190" height="170" rx="14" class="control-box"/>
+    <text x="1162" y="550" class="box-title">Causal evaluation</text>
+    <text x="1162" y="580" class="box-text">Randomized assist</text>
+    <text x="1162" y="604" class="box-text">Intention-to-treat</text>
+    <text x="1162" y="628" class="box-text">Repeat contact + CSAT</text>
+    <text x="1162" y="652" class="box-text">Cost + capacity guardrails</text>
+  </g>
+
+  <path d="M280 600 H330" class="arrow-offline"/>
+  <path d="M550 600 H600" class="arrow-offline"/>
+  <path d="M820 600 H870" class="arrow-offline"/>
+  <path d="M1090 600 H1140" class="arrow-offline"/>
+
+  <path d="M1235 350 V438 H175 V515" class="arrow-feedback"/>
+  <text x="706" y="433" text-anchor="middle" class="metric">Delayed outcomes + overrides + policy exposure</text>
+
+  <path d="M980 515 V448 H710 V350" class="arrow-feedback"/>
+  <text x="848" y="469" text-anchor="middle" class="small">Approved artifact</text>
+
+  <rect x="45" y="798" width="1310" height="82" rx="16" fill="#ecfdf5" stroke="#99f6e4"/>
+  <text x="70" y="828" class="lane" fill="#0f766e">CONTINUOUS CONTROL PLANE</text>
+  <text x="70" y="856" class="box-text">Service: errors · latency · availability</text>
+  <text x="380" y="856" class="box-text">Model: drift · calibration · lift · slices</text>
+  <text x="730" y="856" class="box-text">Business: repeat contact · CSAT · queue capacity · cost</text>
+  <text x="1170" y="856" class="metric">Alert · freeze · rollback</text>
+</svg>
